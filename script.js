@@ -1,5 +1,5 @@
 /************************************************************
- *  Loan Dashboard — Final Version (with Actual + Modal)
+ *  Loan Dashboard — Final Version (Actual + Modal + CSVs)
  ************************************************************/
 
 /* ===========================
@@ -17,56 +17,50 @@ const CSV_SCENARIOS = "loan_scenarios.csv";
 const CSV_SCENARIOS_SUMMARY = "loan_scenarios_summary.csv";
 
 /* ===========================
-   MODAL FOR PASSWORD
+   PASSWORD MODAL (Styled)
 =========================== */
 
 function showPasswordModal() {
-  const modal = document.createElement("div");
-  modal.id = "passwordModal";
-  modal.style = `
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 9999;
-  `;
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
 
-  modal.innerHTML = `
-    <div style="
-      background: white; padding: 24px; border-radius: 8px;
-      width: 320px; text-align: center; font-family: sans-serif;
-    ">
-      <h2 style="margin-top:0">Actual Budget Login</h2>
-      <p>Introduz a password do Actual:</p>
-      <input id="actualPasswordInput" type="password"
-        style="width:100%; padding:8px; margin-top:8px; font-size:16px" />
-      <button id="actualPasswordBtn" style="
-        margin-top:16px; padding:10px 20px; font-size:16px;
-        background:#0078ff; color:white; border:none; border-radius:4px;
-        cursor:pointer;
-      ">Ligar</button>
-      <div id="passwordError" style="color:red; margin-top:10px; display:none">
+  backdrop.innerHTML = `
+    <div class="modal-box">
+      <h2>Actual Budget</h2>
+      <p>Introduz a password para ligar ao servidor</p>
+
+      <input id="actualPasswordInput" 
+             type="password" 
+             class="modal-input"
+             placeholder="Password" />
+
+      <button id="actualPasswordBtn" class="modal-button">
+        Ligar
+      </button>
+
+      <div id="passwordError" class="modal-error">
         Password incorreta
       </div>
     </div>
   `;
 
-  document.body.appendChild(modal);
+  document.body.appendChild(backdrop);
 
   document.getElementById("actualPasswordBtn").onclick = () => {
     const pwd = document.getElementById("actualPasswordInput").value.trim();
     if (!pwd) return;
 
-    modal.style.pointerEvents = "none";
-    modal.style.opacity = "0.8";
+    backdrop.style.pointerEvents = "none";
+    backdrop.style.opacity = "0.85";
 
     connectToActual(pwd)
       .then(() => {
-        modal.remove();
+        backdrop.remove();
         loadDashboardData();
       })
       .catch(() => {
-        modal.style.pointerEvents = "auto";
-        modal.style.opacity = "1";
+        backdrop.style.pointerEvents = "auto";
+        backdrop.style.opacity = "1";
         document.getElementById("passwordError").style.display = "block";
       });
   };
@@ -87,7 +81,7 @@ async function connectToActual(password) {
 
   if (!syncRes.ok) throw new Error("Sync failed");
 
-  // 2) Download budget
+  // 2) Fetch transactions
   const budgetRes = await fetch(
     `${SERVER_URL}/api/v1/budget/${BUDGET_ID}/transactions`,
     { headers: { "X-Actual-Password": password } }
@@ -97,7 +91,6 @@ async function connectToActual(password) {
 
   const data = await budgetRes.json();
 
-  // Filter loan account
   actualTransactions = data.filter(
     t => t.account === LOAN_ACCOUNT_NAME
   );
@@ -123,10 +116,6 @@ function parseCSV(text) {
   });
 }
 
-/* ===========================
-   LOAD CSVs
-=========================== */
-
 async function loadCSV(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error("CSV not found: " + url);
@@ -146,7 +135,7 @@ function computeRealBalance() {
   const points = [];
 
   for (const t of sorted) {
-    balance += t.amount; // Actual uses positive/negative amounts
+    balance += t.amount;
     points.push({
       date: new Date(t.date),
       balance: balance
@@ -267,7 +256,6 @@ function fillSummary(real, projection, summary) {
   document.getElementById("realPayoffDate").textContent =
     realLast ? realLast.date.toISOString().slice(0, 10) : "-";
 
-  // Interest saved etc. — simplified
   document.getElementById("realInterest").textContent = "-";
   document.getElementById("interestSavedReal").textContent = "-";
   document.getElementById("monthsSavedReal").textContent = "-";
