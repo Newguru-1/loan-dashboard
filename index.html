@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Loan Payoff Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div>
+        <h1>Loan Payoff Dashboard</h1>
+        <p class="subtitle">Projection vs real vs scenarios</p>
+      </div>
+      <div class="status" id="statusText">Loading data…</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel panel-main">
+        <div class="panel-header">
+          <h2>Balance over time</h2>
+          <p class="panel-subtitle">
+            Filled area: real balance · Lines: base & scenarios
+          </p>
+        </div>
+        <canvas id="loanChart"></canvas>
+      </section>
+
+      <section class="panel panel-side">
+        <div class="panel-header">
+          <h2>Summary</h2>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="label">Base payoff date</div>
+            <div class="value" id="basePayoffDate">–</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">Real payoff (projected)</div>
+            <div class="value" id="realPayoffDate">–</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">Interest (base)</div>
+            <div class="value" id="baseInterest">–</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">Interest (real, projected)</div>
+            <div class="value" id="realInterest">–</div>
+          </div>
+          <div class="summary-item highlight">
+            <div class="label">Interest saved vs base</div>
+            <div class="value" id="interestSavedReal">–</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">Months saved vs base</div>
+            <div class="value" id="monthsSavedReal">–</div>
+          </div>
+        </div>
+
+        <div class="panel-header scenarios-header">
+          <h3>Scenario comparison</h3>
+        </div>
+        <table class="scenarios-table">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Payoff date</th>
+              <th>Total interest</th>
+              <th>Interest saved</th>
+            </tr>
+          </thead>
+          <tbody id="scenariosTableBody">
+            <!-- Filled by JS -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
