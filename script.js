@@ -5,11 +5,11 @@ const ACTUAL_BASE_URL = "https://nostalgic-malamute.pikapod.net";
 
 // OneDrive CSV links (the ones you gave me)
 const CSV_PROJECTION_URL =
-  "https://onedrive.live.com/download?resid=E903FD9E25234A94B400BA4DB17F8AE6";
+  "https://raw.githubusercontent.com/Newguru-1/loan-dashboard/refs/heads/main/loan_projection.csv";
 const CSV_SCENARIOS_URL =
-  "https://onedrive.live.com/download?resid=FBEE0E56551D4D1D8FFE65DE891895DE";
+  "https://raw.githubusercontent.com/Newguru-1/loan-dashboard/refs/heads/main/loan_scenarios.csv";
 const CSV_SCENARIOS_SUMMARY_URL =
-  "https://onedrive.live.com/download?resid=089E8BED4D1A40219FD3770256C1D660";
+  "https://raw.githubusercontent.com/Newguru-1/loan-dashboard/refs/heads/main/loan_scenarios_summary.csv";
 
 // You can later refine these filters if needed
 const LOAN_ACCOUNT_NAME = null; // e.g. "VWFS Loan" if you want to filter by account
@@ -424,4 +424,5 @@ async function main() {
 }
 
 document.addEventListener("DOMContentLoaded", main);
+
 
